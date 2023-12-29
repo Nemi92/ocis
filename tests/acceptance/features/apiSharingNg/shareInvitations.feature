@@ -580,3 +580,21 @@ Feature: Send a sharing invitations
       | permissions/delete |
       | deleted/delete     |
       | permissions/deny   |
+
+
+  Scenario Outline: send share invitation to user
+    Given user "Alice" has created folder "FolderToShare"
+    Given user "Alice" has uploaded file with content "to share" to "FolderToShare/textfile.txt"
+    When user "Alice" sends the following share invitation using the Graph API:
+      | resourceType | folder |
+      | resource     | FolderToShare    |
+      | space        | Personal        |
+      | sharee       | Brian           |
+      | shareType    | user            |
+      | role         | <role>          |
+    Then the HTTP status code should be "200"
+    And as user "Brian" folder "/" of the space "Shares" should contain these files:
+      | textfile.txt |
+    Examples:
+      | role        |
+      | Viewer      |

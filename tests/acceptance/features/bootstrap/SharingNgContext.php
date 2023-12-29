@@ -167,4 +167,56 @@ class SharingNgContext implements Context {
 			)
 		);
 	}
+
+    /**
+     * @Then /^as user "([^"]*)" folder "([^"]*)" of the space "([^"]*)" should (not|)\s?contain these files:$/
+     *
+     * @param string $user
+     * @param string $folderPath
+     * @param string $spaceName
+     * @param string $shouldOrNot
+     * @param TableNode $table
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function asUserFolderOfTheSpaceShouldContainTheseFiles(string $user, string $folderPath, string $spaceName, string $shouldOrNot, TableNode $table): void
+    {
+        $should = !($shouldOrNot === 'not');
+        $rows = $table->getRows();
+
+        $response = GraphHelper::getSharesSharedWithMe(
+            $this->featureContext->getBaseUrl(),
+            $this->featureContext->getStepLineRef(),
+            $user,
+            $this->featureContext->getPasswordForUser($user)
+        );
+
+        $contents = \json_decode($response->getBody()->getContents(), true);
+        $fileFound = false;
+        foreach ($rows as $row) {
+            $resource = $row[0];
+            if ($resource === '') {
+                continue;
+            }
+            $fileId = $this->spacesContext->getFileId($user, $spaceName, $resource);
+            foreach ($contents['value'] as $entry) {
+                if ($entry['remoteItem']['id'] === $fileId) {
+                    $fileFound = true;
+                    break;
+                }
+            }
+        }
+        if ($should) {
+            Assert::assertNotEmpty(
+                $fileFound,
+                "response does not contain the entry "
+            );
+        } else {
+            Assert::assertFalse(
+                $fileFound,
+                "response does contain the entry but should not"
+            );
+        }
+    }
 }
