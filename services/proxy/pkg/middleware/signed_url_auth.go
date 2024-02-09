@@ -13,11 +13,10 @@ import (
 
 	revactx "github.com/cs3org/reva/v2/pkg/ctx"
 	"github.com/owncloud/ocis/v2/ocis-pkg/log"
-	storemsg "github.com/owncloud/ocis/v2/protogen/gen/ocis/messages/store/v0"
-	storesvc "github.com/owncloud/ocis/v2/protogen/gen/ocis/services/store/v0"
 	"github.com/owncloud/ocis/v2/services/proxy/pkg/config"
 	"github.com/owncloud/ocis/v2/services/proxy/pkg/user/backend"
 	"github.com/owncloud/ocis/v2/services/proxy/pkg/userroles"
+	microstore "go-micro.dev/v4/store"
 	"golang.org/x/crypto/pbkdf2"
 )
 
@@ -46,7 +45,7 @@ type SignedURLAuthenticator struct {
 	PreSignedURLConfig config.PreSignedURL
 	UserProvider       backend.UserBackend
 	UserRoleAssigner   userroles.UserRoleAssigner
-	Store              storesvc.StoreService
+	Store              microstore.Store
 	Now                func() time.Time
 }
 
@@ -207,18 +206,12 @@ func (m SignedURLAuthenticator) createSignature(url string, signingKey []byte) s
 }
 
 func (m SignedURLAuthenticator) getSigningKey(ctx context.Context, ocisID string) ([]byte, error) {
-	res, err := m.Store.Read(ctx, &storesvc.ReadRequest{
-		Options: &storemsg.ReadOptions{
-			Database: "proxy",
-			Table:    "signing-keys",
-		},
-		Key: ocisID,
-	})
-	if err != nil || len(res.Records) < 1 {
+	res, err := m.Store.Read(ocisID)
+	if err != nil || len(res) < 1 {
 		return nil, err
 	}
 
-	return res.Records[0].Value, nil
+	return res[0].Value, nil
 }
 
 // Authenticate implements the authenticator interface to authenticate requests via signed URL auth.

@@ -103,7 +103,7 @@ We also suggest to use the last port in your extensions' range as a debug/metric
 | 9445-9449  | FREE                                                                                   |
 | 9450-9454  | FREE                                                                                   |
 | 9455-9459  | FREE                                                                                   |
-| 9460-9464  | [store]({{< ref "../store/_index.md" >}})                                              |
+| 9460-9464  | FREE                                                                                   |
 | 9465-9469  | FREE                                                                                   |
 | 9470-9474  | FREE                                                                                   |
 | 9475-9479  | FREE                                                                                   |
