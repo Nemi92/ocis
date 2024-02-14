@@ -519,13 +519,13 @@ Feature: listing sharedWithMe when auto-sync is disabled
 
 
   Scenario: group member lists the file shared with them when auto-sync is disabled
-    And user "Carol" has been created with default attributes and without skeleton files
+    Given user "Carol" has been created with default attributes and without skeleton files
     And group "grp1" has been created
     And the following users have been added to the following groups
       | username | groupname |
       | Brian    | grp1      |
       | Carol    | grp1      |
-    Given user "Alice" has uploaded file with content "to share" to "textfile.txt"
+    And user "Alice" has uploaded file with content "to share" to "textfile.txt"
     And user "Brian" has disabled the auto-sync share
     And user "Alice" has sent the following share invitation:
       | resource        | textfile.txt |
@@ -793,13 +793,13 @@ Feature: listing sharedWithMe when auto-sync is disabled
 
 
   Scenario: group member lists the folder shared with them when auto-sync is disabled
-    And user "Carol" has been created with default attributes and without skeleton files
+    Given user "Carol" has been created with default attributes and without skeleton files
     And group "grp1" has been created
     And the following users have been added to the following groups
       | username | groupname |
       | Brian    | grp1      |
       | Carol    | grp1      |
-    Given user "Alice" has created folder "folderToShare"
+    And user "Alice" has created folder "folderToShare"
     And user "Brian" has disabled the auto-sync share
     And user "Alice" has sent the following share invitation:
       | resource        | folderToShare |
