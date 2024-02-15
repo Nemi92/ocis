@@ -2189,10 +2189,10 @@ class SpacesContext implements Context {
 			"role" => $rows["role"]
 		];
 
-    // share with custom permission
-    if (isset ($rows["permissions"])){ 
-      $body["permissions"] = $rows["permissions"];
-    }
+		// share with custom permission
+		if (isset($rows["permissions"])) {
+			$body["permissions"] = $rows["permissions"];
+		}
 
 		$fullUrl = $this->baseUrl . $this->ocsApiUrl;
 		$response = $this->sendPostRequestToUrl(
